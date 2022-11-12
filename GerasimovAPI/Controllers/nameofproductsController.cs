@@ -33,7 +33,7 @@ namespace GerasimovAPI.Controllers
 
             if (f)
             {
-                return  Ok(db.nameofproduct.ToList().ConvertAll(x => new nameofproductModel(x)).OrderBy(x=>x.price));
+                return Ok(db.nameofproduct.ToList().ConvertAll(x => new nameofproductModel(x)).OrderBy(x => x.price));
             }
             else
             {
@@ -60,7 +60,7 @@ namespace GerasimovAPI.Controllers
         {
 
             var dbnameofproduct = db.nameofproduct.FirstOrDefault(x => x.id.Equals(id));
-           
+
             dbnameofproduct.name = nameofproduct.name;
             dbnameofproduct.price = nameofproduct.price;
             dbnameofproduct.weight = nameofproduct.weight;
@@ -85,6 +85,75 @@ namespace GerasimovAPI.Controllers
             }
 
             return StatusCode(HttpStatusCode.NoContent);
+        }
+        // Search
+        [Route("api/nameofproducts/search")]
+
+        [HttpGet]
+        public async Task<IHttpActionResult> nameofproductsSearch(string nameofproductsSearchText, int field)
+        {
+            if (String.IsNullOrEmpty(nameofproductsSearchText))
+            {
+
+                switch (field)
+                {
+
+                    case 0:
+                        return Ok(db.nameofproduct.ToList().ConvertAll(x => new nameofproductModel(x)));
+                        break;
+
+                    case 1:
+                        return Ok(db.nameofproduct.ToList().ConvertAll(x => new nameofproductModel(x)).OrderBy(x => x.price));
+                        break;
+
+                    case 2:
+
+                        return Ok(db.nameofproduct.ToList().ConvertAll(x => new nameofproductModel(x)).OrderByDescending(x => x.price));
+                        break;
+
+                    case 3:
+                        return Ok(db.nameofproduct.ToList().ConvertAll(x => new nameofproductModel(x)).OrderBy(x => x.weight));
+                        break;
+
+                    case 4:
+                        return Ok(db.nameofproduct.ToList().ConvertAll(x => new nameofproductModel(x)).OrderByDescending(x => x.weight));
+                        break;
+                    default:
+                        return Ok(db.nameofproduct.ToList().ConvertAll(x => new nameofproductModel(x)));
+                        break;
+                }
+
+            }
+            else
+            {
+                switch (field)
+                {
+
+                    case 0:
+                        return Ok(db.nameofproduct.ToList().ConvertAll(x => new nameofproductModel(x)).Where(x => x.name.ToLower().Contains(nameofproductsSearchText.ToLower())));
+                        break;
+
+                    case 1:
+                        return Ok(db.nameofproduct.ToList().ConvertAll(x => new nameofproductModel(x)).Where(x => x.name.ToLower().Contains(nameofproductsSearchText.ToLower())).OrderBy(x => x.price));
+                        break;
+
+                    case 2:
+
+                        return Ok(db.nameofproduct.ToList().ConvertAll(x => new nameofproductModel(x)).Where(x => x.name.ToLower().Contains(nameofproductsSearchText.ToLower())).OrderByDescending(x => x.price));
+                        break;
+
+                    case 3:
+                        return Ok(db.nameofproduct.ToList().ConvertAll(x => new nameofproductModel(x)).Where(x => x.name.ToLower().Contains(nameofproductsSearchText.ToLower())).OrderBy(x => x.weight));
+                        break;
+
+                    case 4:
+                        return Ok(db.nameofproduct.ToList().ConvertAll(x => new nameofproductModel(x)).Where(x => x.name.ToLower().Contains(nameofproductsSearchText.ToLower())).OrderByDescending(x => x.weight));
+                        break;
+                    default:
+                        return Ok(db.nameofproduct.ToList().ConvertAll(x => new nameofproductModel(x)).Where(x => x.name.ToLower().Contains(nameofproductsSearchText.ToLower())));
+                        break;
+                }
+            }
         }
 
         // POST: api/nameofproducts
